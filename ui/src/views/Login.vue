@@ -5,9 +5,9 @@
       <h1>АВТОРИЗАЦИЯ</h1>
         <fieldset>
             <form action="javascript:void(0);" method="get">
-                <input type="text" required value="Логин" onBlur="if(this.value=='')this.value='Логин'" onFocus="if(this.value=='Логин')this.value='' ">
-                <input type="password" required value="Пароль" onBlur="if(this.value=='')this.value='Пароль'" onFocus="if(this.value=='Пароль')this.value='' ">
-                <input type="submit" value="ВОЙТИ">
+                <input type="text" required v-model="username" placeholder="Login">
+                <input type="password" required v-model="password" placeholder="Password">
+                <input type="submit" value="ВОЙТИ" @click="showData()" >
             </form>
         </fieldset>
     </div>
@@ -23,8 +23,8 @@ export default{
     }
   },
   methods: {
-    showData (name) {
-      alert(name)
+    showData () {
+      alert(this.username)
     }
   }
 }
