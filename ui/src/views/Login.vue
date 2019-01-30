@@ -1,7 +1,9 @@
 <template>
   <div class="about">
-    <h1>This is LOGIN page</h1>
-      <div id="login-form">
+    <div id = "headMessage">
+      Для работы необходимо пройти авторизацию
+    </div>
+    <div id="login-form">
       <h1>АВТОРИЗАЦИЯ</h1>
         <fieldset>
             <form action="javascript:void(0);" method="get">
@@ -15,7 +17,7 @@
 </template>
 
 <script>
-export default{
+export default {
   data: function () {
     return {
       username: '',
@@ -144,5 +146,12 @@ export default{
 
   #login-form fieldset form span a:hover {
     color: #eb6d1a;
+  }
+
+  #headMessage {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 10vh;
   }
 </style>

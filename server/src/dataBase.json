@@ -1,0 +1,7 @@
+{
+    "account": {
+        "name": "user1",
+        "password": "user1",
+        "role": "users"
+    }
+}
