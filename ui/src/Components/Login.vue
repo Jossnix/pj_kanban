@@ -1,42 +1,95 @@
 <template>
-  <div class="about">
-    <h1>This is LOGIN page</h1>
+  <div>
+    <div id="welcome">
+      <div id = "messasge">
+        {{ test }}
+        <button id = "butCancelled" @click="pressBtnExit()">Выход</button>
+      </div>
+    </div>
+    <div id = "authorization" v-show="!isLogin">
       <div id="login-form">
-      <h1>АВТОРИЗАЦИЯ</h1>
-        <fieldset>
-            <form action="javascript:void(0);" method="get">
-                <input type="text" required v-model="username" placeholder="Login">
-                <input type="password" required v-model="password" placeholder="Password">
-                <input type="submit" value="ВОЙТИ" @click="showData()" >
-            </form>
-        </fieldset>
+        <h1>АВТОРИЗАЦИЯ</h1>
+          <fieldset>
+              <form action="javascript:void(0);" method="get">
+                  <input type="text" required v-model="username" placeholder="Login">
+                  <input type="password" required v-model="password" placeholder="Password">
+                  <input type="submit" value="ВОЙТИ" @click="enterLogin()" >
+              </form>
+          </fieldset>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-export default{
-  data: function () {
+import store from '../../Store/index.js'
+import {authorization} from './internalFunction.js';
+import Vue from 'vue'
+export default {
+  name: 'welcome',
+  data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      invalidInput: false,
+      message: 'Вы не авторизованы!'
     }
   },
   methods: {
-    showData () {
-      alert(this.username)
+    // Пройти авторизация
+    async enterLogin () {
+      this.invalidInput = await authorization(this.username, this.password, this.invalidInput)
+      if (this.invalidInput) {
+        alert ("login or password is incorrect!");
+        this.username = '';
+        this.password = '';
+        this. invalidInput = false;
+      } else {
+        this.$router.push({ path: '/showGrid' });
+      }
+    },
+    pressBtnExit(){
+      this.$store.commit ('cleanToken', '');
+      this.$store.commit ('cleanUserName', '');
+      this.$store.commit ('startmessage', 'Вы не авторизованы');
+      this.$router.push({ path: '/login' })
+      localStorage.removeItem('name');
+      localStorage.removeItem('token');
+    }
+  },
+  computed:{
+    // Выводимый статус пользователя авторизован/не авторизован
+    test(){
+      return store.state.startMsg;
+    },
+    
+    // Проверка статуса пользователя авторизован/не авторизован
+    isLogin: function() {
+      if (this.$store.state.userToken.length && this.$store.state.userToken!=='AuthError') {
+        return true
+      } else {
+        this.username = '';
+        this.password = '';
+        return false
+      }
     }
   }
 }
 </script>
 
 <style>
+  #messasge {
+    font-size: 3em;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+  }
+
   #login-form {
     background-color: #363636;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    margin: 150px auto;
+    margin: 5% auto;
     width: 300px;
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
@@ -146,3 +199,4 @@ export default{
     color: #eb6d1a;
   }
 </style>
+
