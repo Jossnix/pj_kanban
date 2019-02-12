@@ -26,7 +26,7 @@ import store from '../../Store/index.js'
 import {authorization} from './internalFunction.js';
 import Vue from 'vue'
 export default {
-  name: 'welcome',
+  name: 'login',
   data () {
     return {
       username: '',
@@ -45,7 +45,7 @@ export default {
         this.password = '';
         this. invalidInput = false;
       } else {
-        this.$router.push({ path: '/showGrid' });
+        this.$router.push({ path: '/mypage' });
       }
     },
     pressBtnExit(){

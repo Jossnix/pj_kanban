@@ -3,7 +3,7 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import store from '../Store/index.js'
 import login from './Components/Login.vue'
-import showGrid from './Components/ShowGrid.vue'
+import mypage from './Components/MyPage.vue'
 
 var VueAuth = require('vue-auth')
  
@@ -23,23 +23,23 @@ var router = new VueRouter({
       component: login
     },
     {
-      path: '/showGrid',
-      name: 'showGrid',
+      path: '/mypage',
+      name: 'mypage',
       meta: {
         requiresAuth: true
       },
-      component: showGrid
+      component: mypage
     }
   ]
 })
 
-// При отсутсвии авторизации пользователя будет перенаправлять на страницу welcome
+// При отсутсвии авторизации пользователя будет перенаправлять на страницу mypage
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     if (localStorage.getItem('token') !== null) {
       next()
     } else {
-      router.push('/welcome')
+      router.push('/mypage')
     }
   } else {
     next()
