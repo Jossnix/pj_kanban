@@ -49,5 +49,6 @@ router.beforeEach((to, from, next) => {
 const app = new Vue({
   el: '#app',
   store: store,
-  router: router
+  router: router,
+  render: h =>h(App)
 })

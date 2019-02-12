@@ -2,19 +2,16 @@
   <div id="app">
     start app
     <login></login>
-    <globalComp></globalComp>
   </div>
 </template>
 
 <script>
 import login from './Components/Login.vue'
-import globalComp from './Components/Global.vue'
 
 export default {
   name: 'app',
   components: {
-    login,
-    globalComp
+    login
   }
 }
 </script>
