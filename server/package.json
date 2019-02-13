@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "serv": "nodemon src\\server.js"
+    "serv": "nodemon src\\server.js",
+    "servl": "nodemon src/server.js"
   },
   "dependencies": {
     "async": "^2.6.1",

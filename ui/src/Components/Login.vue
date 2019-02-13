@@ -3,7 +3,6 @@
     <div id="welcome">
       <div id = "messasge">
         {{ test }}
-        <button id = "butCancelled" @click="pressBtnExit()">Выход</button>
       </div>
     </div>
     <div id = "authorization" v-show="!isLogin">
