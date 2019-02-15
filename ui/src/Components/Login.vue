@@ -44,7 +44,7 @@ export default {
         this.password = '';
         this. invalidInput = false;
       } else {
-        this.$router.push({ path: '/mypage' });
+        this.$router.push({ path: '/' });
       }
     },
     pressBtnExit(){

@@ -2,7 +2,7 @@
   <div id="app">
     <div id = "globalDiv">
         <div id = "headDiv">
-          <cMenu></cMenu>
+          <cMenu v-show = "isLogin"></cMenu>
         </div>
         <div id = "footDiv">
           Содержимое
@@ -21,6 +21,16 @@ export default {
   components: {
     login,
     cMenu
+  },
+  computed: {
+    // Проверка статуса пользователя авторизован/не авторизован
+    isLogin: function() {
+      if (this.$store.state.userToken.length && this.$store.state.userToken!=='AuthError') {
+        return true
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>

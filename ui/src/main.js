@@ -23,13 +23,21 @@ var router = new VueRouter({
       component: login
     },
     {
-      path: '/mypage',
+      path: '/',
       name: 'mypage',
       meta: {
         requiresAuth: true
       },
       component: mypage
     }
+    // {
+    //   path: '/mypage',
+    //   name: 'mypage',
+    //   meta: {
+    //     requiresAuth: true
+    //   },
+    //   component: mypage
+    // }
   ]
 })
 
