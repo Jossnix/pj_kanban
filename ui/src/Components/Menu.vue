@@ -1,10 +1,11 @@
 <template>
     <div>
       <div id = "menuPanel">
-        <div id = "blockMenu">
-          Меню
+        <div id = "blockMenu" v-show = "isLogin">
+          <input type="text" value="Моя страница" readonly @click="goPage('/')">
+          <input type="text" value="Проект" readonly @click="goPage('/pj')">
         </div>
-        <div id = "blockExit">
+        <div id = "blockExit" v-show = "isLogin">
           <button id = "btnExit" @click="pressBtnExit()">Выход</button>
         </div>
       </div>
@@ -21,6 +22,9 @@ export default {
     }
   },
   methods: {
+    goPage(pathPage) {
+      this.$router.push({ path: pathPage })
+    },
     pressBtnExit(){
       this.$store.commit ('cleanToken', '');
       this.$store.commit ('cleanUserName', '');
@@ -28,6 +32,16 @@ export default {
       this.$router.push({ path: '/login' })
       localStorage.removeItem('name');
       localStorage.removeItem('token');
+    }
+  },
+  computed: {
+    // Проверка статуса пользователя авторизован/не авторизован
+    isLogin: function() {
+      if (this.$store.state.userToken.length && this.$store.state.userToken!=='AuthError') {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
@@ -41,6 +55,7 @@ export default {
     align-items: center;
     width: 100%;
     color: rgb(231, 231, 231);
+    background: rgba(5, 10, 27, 0.925);
 }     
 
 #blockMenu {

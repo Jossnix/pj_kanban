@@ -1,6 +1,6 @@
 <template>
     <div>
-        Good!
+        My page!
     </div>
 </template>
 

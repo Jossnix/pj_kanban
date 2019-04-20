@@ -1,12 +1,15 @@
 <template>
   <div id="app">
     <div id = "globalDiv">
-        <div id = "headDiv">
+        <!-- <div id = "headDiv">
           <cMenu v-show = "isLogin"></cMenu>
-        </div>
+        </div> -->
         <div id = "footDiv">
           Содержимое
           <login></login>
+          <div id="cont">
+              <router-view></router-view>
+          </div>
         </div>
     </div>
   </div>
