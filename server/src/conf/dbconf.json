@@ -1,0 +1,9 @@
+{
+  "kUrl": "mongodb://localhost:27017/",
+  "kName": "pj_new",
+  "kCollections": {
+    "users": "users",
+    "roles": "roles",
+    "tickets": "tickets"
+  }
+}
