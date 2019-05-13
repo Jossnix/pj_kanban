@@ -4,11 +4,11 @@ const dbconf = require("./conf/dbconf.json");
 const url = dbconf.kUrl;
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
  
-// createUser(dbconf, "Dima8", "Иван Иванович", "222", "user");
+// createUser(dbconf, "user", "Пользователь для тестирования", "111", "user");
 // changeUser(dbconf, "Dima8", "Dimon", "", "");
 // delUser(dbconf, "Dima4");
-// checkUser(dbconf, "Dima");
-createTicket(dbconf, "Title for new ticket");
+// checkUser(dbconf, "user");
+// createTicket(dbconf, "Title for new ticket");
 // delTicket(dbconf, 5);
 
 // Добавить пользователя
@@ -40,17 +40,17 @@ async function createUser (dbconf, newUser, userDiscr, password, userRole) {
   })
 }
 // Проверить, существует ли пользователь
-function checkUser (dbconf, oldUser) {
-  mongoClient.connect(async function(err, client){
+async function checkUser (dbconf, oldUser) {
+  await mongoClient.connect(async function(err, client){
     const db = client.db(dbconf.kName);
     const collectionUs = db.collection(dbconf.kCollections.users)
-    await collectionUs.find({name: oldUser}).toArray(function(err, results){
+    await collectionUs.find({name: oldUser}).toArray(async function(err, results){
       if(err){ 
         return console.log(err);
       } else {
         console.log("Finds: ", results);
-        client.close();
-        return (results)
+        await client.close();
+        return (results[0])
       }
     });
   });
@@ -234,3 +234,5 @@ async function changeUser (dbconf, chUser, userDiscr, password, userRole) {
       })
   })
 }
+
+exports.checkUser = checkUser;

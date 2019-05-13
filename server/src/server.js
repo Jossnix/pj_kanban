@@ -1,6 +1,8 @@
 var async = require('async');
 var express = require('express');
 var bodyParser = require("body-parser");
+const dbconf = require("./conf/dbconf.json");
+var dbFn = require("./dbFunctions");
 var serv = express();
 //Auth modules
 const jwt = require('jsonwebtoken');
@@ -21,12 +23,17 @@ const cUser = 'user'
 const cPass = '123'
 
 // Функция для получения токена авторизации
-serv.post('/api/login', function(req, res){
+serv.post('/api/login', async function(req, res){
   res.set('Access-Control-Allow-Origin', ['*']);
   var name = req.body.name
   var pass = req.body.pass
   console.log(name)
   console.log(pass)
+  var fUser = await dbFn.checkUser(dbconf, "user")
+  while(fUser === undefined) {
+    setTimeout( function(){console.log("wait");}, 1000);
+  }
+  console.log("data user: ", fUser);
   if(name === cUser && pass === cPass)
   {
     jwt.sign(req.body, jwtsecret, (err,token)=>{
