@@ -3,7 +3,14 @@ const dbconf = require("./conf/dbconf.json");
 
 const url = dbconf.kUrl;
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
- 
+
+// findMnCon("user")
+// .then(
+//   response => {
+//     console.log("RESPONSE: ", response);
+//   },
+//   error => console.log("<=> error checkUser: ", error)
+// )
 // createUser(dbconf, "user", "Пользователь для тестирования", "111", "user");
 // changeUser(dbconf, "Dima8", "Dimon", "", "");
 // delUser(dbconf, "Dima4");
@@ -40,19 +47,76 @@ async function createUser (dbconf, newUser, userDiscr, password, userRole) {
   })
 }
 // Проверить, существует ли пользователь
+// async function checkUser (dbconf, oldUser) {
+//   await mongoClient.connect(async function(err, client){
+//     const db = client.db(dbconf.kName);
+//     const collectionUs = db.collection(dbconf.kCollections.users)
+//     await collectionUs.findOne({name: oldUser}, async function(err, results){
+//       if(err){ 
+//         return console.log(err);
+//       } else {
+//         console.log("Finds: ", results);
+//         await client.close();
+//         return (results)
+//       }
+//     });
+//   });
+// }
+function findMnCon(oldUser) {
+  console.log("-> start findMnCon")
+  return new Promise (function (resolve, reject) {
+  mongoClient.connect((error, client) => {
+      if (error) {
+        let error = new Error (this.statusText);
+        error.code = this.status;
+        reject (error);
+      } else {
+        const db = client.db(dbconf.kName)
+        const collectionUs = db.collection(dbconf.kCollections.users)
+        findMn(collectionUs, oldUser)
+        .then(
+          response => {
+            fUser = response;
+            resolve (response);
+            client.close();
+          },
+          error => console.log("<=> error checkUser: ", error)
+        )
+      }
+  })
+  })
+}
+
+function findMn(collectionUs, oldUser) {
+  console.log("-> start findMn")
+  return new Promise (function (resolve, reject) {
+    collectionUs.findOne({name: oldUser}, (error, result) => {
+      if (error) {
+          console.log("local error");
+          let error = new Error (this.statusText);
+          error.code = this.status;
+          reject (error);
+      } else {
+          resolve (result);
+      }
+  })
+  })
+}
 async function checkUser (dbconf, oldUser) {
   await mongoClient.connect(async function(err, client){
     const db = client.db(dbconf.kName);
     const collectionUs = db.collection(dbconf.kCollections.users)
-    await collectionUs.find({name: oldUser}).toArray(async function(err, results){
-      if(err){ 
-        return console.log(err);
-      } else {
-        console.log("Finds: ", results);
-        await client.close();
-        return (results[0])
-      }
-    });
+    return new Promise (function (resolve, reject) {
+            let resultQuery = collectionUs.findOne({name: oldUser}, (error, results) => {
+                if (error) {
+                    let error = new Error (this.statusText);
+                    error.code = this.status;
+                    reject (error);
+                } else {
+                    resolve (results);
+                }
+            })
+        })
   });
 }
 // Удалить пользователя
@@ -236,3 +300,4 @@ async function changeUser (dbconf, chUser, userDiscr, password, userRole) {
 }
 
 exports.checkUser = checkUser;
+exports.findMnCon = findMnCon;

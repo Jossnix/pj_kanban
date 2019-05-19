@@ -29,12 +29,17 @@ serv.post('/api/login', async function(req, res){
   var pass = req.body.pass
   console.log(name)
   console.log(pass)
-  var fUser = await dbFn.checkUser(dbconf, "user")
-  while(fUser === undefined) {
-    setTimeout( function(){console.log("wait");}, 1000);
-  }
+  var fUser;
+  await dbFn.findMnCon("user")
+  .then(
+    response => {
+      fUser = response;
+      console.log("RESPONSE: ", response);
+    },
+    error => console.log("<=> error checkUser: ", error)
+  )
   console.log("data user: ", fUser);
-  if(name === cUser && pass === cPass)
+  if(name === fUser.name && pass === fUser.pas)
   {
     jwt.sign(req.body, jwtsecret, (err,token)=>{
       // В качестве ответа отправляется имя пользователя и токен
