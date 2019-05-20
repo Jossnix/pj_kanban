@@ -4,6 +4,7 @@
         <div id = "blockMenu" v-show = "isLogin">
           <input type="text" value="Моя страница" readonly @click="goPage('/')">
           <input type="text" value="Проект" readonly @click="goPage('/pj')">
+          <input type="text" value="Управление" readonly @click="goPage('/manager')">
         </div>
         <div id = "blockExit" v-show = "isLogin">
           <button id = "btnExit" @click="pressBtnExit()">Выход</button>

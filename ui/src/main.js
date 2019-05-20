@@ -5,6 +5,7 @@ import store from '../Store/index.js'
 import login from './Components/Login.vue'
 import lMenu from './Components/Menu.vue'
 import mypage from './Components/MyPage.vue'
+import manager from './Components/Manager.vue'
 import pj from './Components/Project.vue'
 
 var VueAuth = require('vue-auth')
@@ -31,6 +32,14 @@ var router = new VueRouter({
         requiresAuth: true
       },
       component: mypage
+    },
+    {
+      path: '/manager',
+      name: 'manager',
+      meta: {
+        requiresAuth: true
+      },
+      component: manager
     },
     {
       path: '/pj',

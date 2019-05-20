@@ -1,0 +1,16 @@
+{"_id":{"$oid":"5ccf31049dfb9c17efa66282"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf32ab8b7f40187edbfe68"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf32c5838fb618986b84df"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf32d9c98ef118b471e10c"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf33279cfcfc18e28251b6"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf33331be87218f971dbf3"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf33e2fc31391944f97eaa"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf344f09dd94196ebcadd1"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf3477cfaaaf198a7509d2"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5ccf34c764202719b2fa1ba7"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5cd04e71d9f620058e55cbe0"},"name":"Ivan","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5cd0876889a0921a9a6cbf2d"},"name":"Dima","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5cd0879ef8c4541accd397d7"},"name":"Dima2","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5cd08b8112735f1bf8cfa5b6"},"name":"Dima3","nameDiscr":"Иван Иванович","pas":"222","role":"user"}
+{"_id":{"$oid":"5cd6ea12dd8aaf2a66db72d5"},"name":"Dima8","nameDiscr":"Dimon","pas":"888","role":"user"}
+{"_id":{"$oid":"5cd9a321ac7ae935dec8c870"},"name":"user","nameDiscr":"Пользователь для тестирования","pas":"111","role":"user"}
