@@ -62,30 +62,6 @@ async function createUser (dbconf, newUser, userDiscr, password, userRole) {
 //     });
 //   });
 // }
-function findMnCon(oldUser) {
-  console.log("-> start findMnCon")
-  return new Promise (function (resolve, reject) {
-  mongoClient.connect((error, client) => {
-      if (error) {
-        let error = new Error (this.statusText);
-        error.code = this.status;
-        reject (error);
-      } else {
-        const db = client.db(dbconf.kName)
-        const collectionUs = db.collection(dbconf.kCollections.users)
-        findMn(collectionUs, oldUser)
-        .then(
-          response => {
-            fUser = response;
-            resolve (response);
-            client.close();
-          },
-          error => console.log("<=> error checkUser: ", error)
-        )
-      }
-  })
-  })
-}
 
 function findMn(collectionUs, oldUser) {
   console.log("-> start findMn")
@@ -300,4 +276,4 @@ async function changeUser (dbconf, chUser, userDiscr, password, userRole) {
 }
 
 exports.checkUser = checkUser;
-exports.findMnCon = findMnCon;
+exports.findMn = findMn;

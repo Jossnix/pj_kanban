@@ -7,7 +7,12 @@ var serv = express();
 //Auth modules
 const jwt = require('jsonwebtoken');
 
+const MongoClient = require("mongodb").MongoClient;
+const url = dbconf.kUrl;
+const mongoClient = new MongoClient(url, { useNewUrlParser: true });
 
+let dbClient;
+let db;
 
 jwtsecret = 'supersecret'
 serv.use(bodyParser.json());
@@ -30,7 +35,8 @@ serv.post('/api/login', async function(req, res){
   console.log(name)
   console.log(pass)
   var fUser;
-  await dbFn.findMnCon("user")
+  const collectionUs = db.collection(dbconf.kCollections.users);
+  await dbFn.findMn(collectionUs, "user")
   .then(
     response => {
       fUser = response;
@@ -61,4 +67,15 @@ serv.post('/api/login', async function(req, res){
 
 serv.listen(3000, function () {
   console.log('Example app listening on port 3000!');
+  mongoClient.connect((error, client) => {
+    if (error) {
+      let error = new Error (this.statusText);
+      error.code = this.status;
+      console.log("Error in connect")
+      reject (error);
+    } else {
+      dbClient = client;
+      db = dbClient.db(dbconf.kName);
+    }
+  })
 });
