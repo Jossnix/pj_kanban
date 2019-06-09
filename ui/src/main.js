@@ -7,6 +7,8 @@ import lMenu from './Components/Menu.vue'
 import mypage from './Components/MyPage.vue'
 import manager from './Components/Manager.vue'
 import pj from './Components/Project.vue'
+import newticket from './Components/manager/FullTicket.vue'
+import newuser from './Components/manager/FullUser.vue'
 
 var VueAuth = require('vue-auth')
  
@@ -40,6 +42,22 @@ var router = new VueRouter({
         requiresAuth: true
       },
       component: manager
+    },
+    {
+      path: '/newticket',
+      name: 'newticket',
+      meta: {
+        requiresAuth: true
+      },
+      component: newticket
+    },
+    {
+      path: '/newuser',
+      name: 'newuser',
+      meta: {
+        requiresAuth: true
+      },
+      component: newuser
     },
     {
       path: '/pj',

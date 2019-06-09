@@ -2,9 +2,12 @@
     <div>
       <div id = "menuPanel">
         <div id = "blockMenu" v-show = "isLogin">
-          <input type="text" value="Моя страница" readonly @click="goPage('/')">
+          <!-- <input type="text" value="Моя страница" readonly @click="goPage('/')">
           <input type="text" value="Проект" readonly @click="goPage('/pj')">
-          <input type="text" value="Управление" readonly @click="goPage('/manager')">
+          <input type="text" value="Управление" readonly @click="goPage('/manager')"> -->
+          <span @click="goPage('/')" class="itemMenu">Моя страница</span>
+          <span @click="goPage('/pj')" class="itemMenu">Проект</span>
+          <span @click="goPage('/manager')" class="itemMenu">Управление</span>
         </div>
         <div id = "blockExit" v-show = "isLogin">
           <button id = "btnExit" @click="pressBtnExit()">Выход</button>
@@ -62,6 +65,11 @@ export default {
 #blockMenu {
     text-align: left;
     margin-left: 10px;
+}
+
+.itemMenu {
+  cursor: pointer;
+  margin: 10px;
 }
 
 #blockExit {

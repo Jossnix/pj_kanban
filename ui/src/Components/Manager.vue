@@ -4,13 +4,13 @@
     <div id = "allComp">
         <div id = "blockTasks">
             <div class="headItem">Карточки</div>
-            <div>Создать карточку</div>
+            <div><button id = "btnCreate" @click="createTicket()">Создать задачу</button></div>
             <div>Изменить карточку</div>
             <div>Удалить карточку</div>
         </div>
         <div id = "blockUsers">
             <div class="headItem">Пользователи</div>
-            <div>Создать пользователя</div>
+            <div><button id = "btnCreate" @click="createUser()">Создать пользователя</button></div>
             <div>Изменить пользователя</div>
             <div>Удалить пользователя</div>
         </div>
@@ -19,7 +19,16 @@
 </template>
 
 <script>
-
+export default {
+  methods: {
+      createTicket() {
+        this.$router.push({ path: '/newticket' })
+      },
+      createUser() {
+        this.$router.push({ path: '/newuser' })
+      }
+    }
+}
 </script>
 <style>
 #allComp {

@@ -29,16 +29,16 @@ Vue.use(vueKanban)
 export default {
   data () {
     return {
-      stages: ['on-hold', 'in-progress', 'needs-review', 'approved'],
+      stages: ['Новые', 'В работе', 'Проверка', 'Принято', 'Приостоновлено', 'Закрыто'],
       blocks: [
         {
             id: 1,
-            status: 'on-hold',
+            status: 'Новые',
             title: 'Test',
         },
         {
             id: 2,
-            status: 'in-progress',
+            status: 'В работе',
             title: 'Test2',
         },
       ]
@@ -49,7 +49,7 @@ export default {
           alert("Создать новую задачу");
           this.blocks.push({
             id: 3,
-            status: 'in-progress',
+            status: 'Новые',
             title: 'Test3',
         })
       },
