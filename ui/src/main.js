@@ -29,11 +29,11 @@ var router = new VueRouter({
     },
     {
       path: '/',
-      name: 'mypage',
+      name: 'pj',
       meta: {
         requiresAuth: true
       },
-      component: mypage
+      component: pj
     },
     {
       path: '/manager',
