@@ -2,34 +2,28 @@
     <div>
       <div id = "menuPanel">
         <div id = "blockMenu" v-show = "isLogin">
-          <b-button-group>
-          <!-- <input type="text" value="Моя страница" readonly @click="goPage('/')">
-          <input type="text" value="Проект" readonly @click="goPage('/pj')">
-          <input type="text" value="Управление" readonly @click="goPage('/manager')"> -->
-          <!-- <span @click="goPage('/')" class="itemMenu">Фильтры</span> -->
+          <b-navbar type="dark">
+          <b-navbar-nav>
           <b-nav-item @click="findDropMenu(item)">Фильтры</b-nav-item>
-          <!-- <span @click="goPage('/')" class="itemMenu">Задачи</span> -->
-          <!-- <b-dropdown id="dropdown-1" text="Задачи" class="m-md-2"> -->
           <b-nav-item-dropdown id="dropdown-1" text="Задачи">
-            <b-dropdown-item>Создать задачу</b-dropdown-item>
+            <b-dropdown-item @click="showModal()">Создать задачу</b-dropdown-item>
+            <!-- <b-dropdown-item @click="$bvMadal.show('mTick')">Создать задачу</b-dropdown-item> -->
           </b-nav-item-dropdown>
-          <b-nav-item-dropdown id="dropdown-2" text="Пользователи" class="m-md-2">
+          <b-nav-item-dropdown id="dropdown-2" text="Пользователи">
             <b-dropdown-item>Создать учётную запись</b-dropdown-item>
             <b-dropdown-item>Изменить учётную запись</b-dropdown-item>
             <b-dropdown-item>Удалить учётную запись</b-dropdown-item>
           </b-nav-item-dropdown>
-          <b-nav-item @click="findDropMenu(item)">Изменить мои данные</b-nav-item>
-          <!-- <span @click="goPage('/')" class="itemMenu">Изменить мои данные</span> -->
-          </b-button-group>
-          <!-- <span @click="goPage('/')" class="itemMenu">Моя страница</span>
-          <span @click="goPage('/pj')" class="itemMenu">Проект</span>
-          <span @click="goPage('/manager')" class="itemMenu">Управление</span> -->
-                  <!-- фильтры задачи пользователи изменить мои данные -->
+          <b-nav-item @click="findDropMenu(item)">Изменить пароль</b-nav-item>
+            <!-- <b-dropdown-item>Удалить учётную запись</b-dropdown-item> -->
+          </b-navbar-nav>
+          </b-navbar>
         </div>
         <div id = "blockExit" v-show = "isLogin">
           <button id = "btnExit" @click="pressBtnExit()">Выход</button>
         </div>
       </div>
+      <mTicket :mTShow="showTicketAdd" ref="modalTick" @getActive="getActiveState"></mTicket>
     </div>
 </template>
 
@@ -37,15 +31,30 @@
 import Vue from 'vue'
 import store from '../../Store/index.js'
 import BootstrapVue from 'bootstrap-vue'
+import modTicket from './modalForms/mTicket'
 
 Vue.use(BootstrapVue);
 
 export default {
   data () {
     return {
+      showTicketAdd: false
     }
   },
   methods: {
+    getActiveState(state) {
+      console.log("> start getActiveState");
+      if (state) {
+        this.showTicketAdd = false;
+      }
+    },
+    showModal() {
+      console.log("> start showModal");
+      // this.$refs['mTick'].show();
+      // this.$store.commit ('setModAddTick', true);
+      this.showTicketAdd =! this.showTicketAdd;
+      // this.$bvMadal.show('mTick');
+    },
     goPage(pathPage) {
       this.$router.push({ path: pathPage })
     },
@@ -59,6 +68,11 @@ export default {
     }
   },
   computed: {
+    // showTicketAdd: function() {
+    //   alert(store.getters.getModAddTick);
+    //   return store.getters.getModAddTick;
+    // },
+
     // Проверка статуса пользователя авторизован/не авторизован
     isLogin: function() {
       if (this.$store.state.userToken.length && this.$store.state.userToken!=='AuthError') {
@@ -69,6 +83,7 @@ export default {
     }
   }
 }
+Vue.component('mTicket', modTicket)
 </script>
 
 <style>

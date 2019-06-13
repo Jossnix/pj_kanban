@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- фильтры задачи пользователи изменить мои данные -->
-				<div class = "titleHead">Всего задач: {{allCount}} Необходимо назначить: {{allNoAns}}</div>
+				<div class = "titleHeadProj">Всего задач: {{allCount}} Необходимо назначить: {{allNoAns}} {{needUp}}</div>
         <hr>
-        <!-- <button id = "btnCreate" @click="createTicket()">Создать задачу</button> -->
+        <!-- <button id = "btnCreate" @click="showStatelocal()">SHOW</button> -->
         <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
         <div v-for="stage in stages" :slot="stage">
             <h2 v-if="stage==='Новые'">{{ stage }}:   {{counterStateNew}}</h2>
@@ -15,9 +15,6 @@
         </div>
         <div v-for="block in blocks" :slot="block.id">
 						<div id = "tick" @dblclick="showTicket(block)" v-if="block.visib">
-            <!-- <div>
-            <strong>id:</strong> {{ block.id }}
-            </div> -->
             <div>
             {{ block.title }}
             </div>
@@ -32,7 +29,6 @@
             Приоритет: <input type="text" :value="block.prior" readonly style = "width: 1.5em; background: green;" class = "prInput">
             </div>
             <div style = "text-align: center;">
-            <!-- Ответственный: {{ block.ansigned }} -->
             Ответственный:
 						<input type="text" :value="block.ansigned" readonly size = "12" class = "prInput" style = "background: red;"v-if="block.ansigned==='Назначить'">
             <input type="text" :value="block.ansigned" readonly size = "12" class = "prInput" v-if="block.ansigned!=='Назначить'">
@@ -40,6 +36,7 @@
 						</div>
         </div>
         </kanban-board>
+				<mTicket ref="modalTick"></mTicket>
     </div>
 </template>
 
@@ -47,6 +44,8 @@
 <script>
 import Vue from 'vue'
 import vueKanban from 'vue-kanban'
+import modTicket from './modalForms/mTicket'
+import store from '../../Store/index.js'
 
 Vue.use(vueKanban)
 
@@ -79,7 +78,8 @@ export default {
             prior: '2',
 						visib: true
         },
-      ]
+			],
+			flagUpdate: false
     }
   },
   methods: {
@@ -96,8 +96,13 @@ export default {
 			},
       updateBlock(id, status) {
           this.blocks.find(b => b.id === Number(id)).status = status;
-          this.blocks.find(b => b.id === Number(id)).ansigned = 'Назначить';
-      }
+					this.blocks.find(b => b.id === Number(id)).ansigned = 'Назначить';
+					this.$store.commit ('setBlockTickets', this.blocks);
+					this.flagUpdate = true;
+			},
+					showStatelocal() {
+			console.log("SHOW:", this.$store.getters.getTickets);
+		}
   },
 	computed: {
 		counterStateNew: function () {
@@ -137,9 +142,29 @@ export default {
 		allNoAns: function () {
 			let counter = this.blocks.filter(y => y.ansigned === 'Назначить').length;
 			return(counter);
+		},
+		needUp: function () {
+			if (this.$store.state.rerend){
+			return('')
+			}
+		}
+	},
+	mounted() {
+		this.blocks = JSON.parse(JSON.stringify(this.$store.getters.getTickets));
+	},
+	updated() {
+		console.log("> start updated");
+		if (this.$store.state.rerend) {
+			console.log("SHOW:", this.$store.getters.getTickets);
+		this.blocks = JSON.parse(JSON.stringify(this.$store.getters.getTickets));
+			console.log("> run updated", this.blocks);
+			this.flagUpdate = false;
+			this.$store.commit ('setRerendFalse');
 		}
 	}
 }
+
+Vue.component('mTicket', modTicket)
 </script>
 
 <style lang="scss">
@@ -370,7 +395,7 @@ ul {
     height: 1.5em;
 }
 
-.titleHead {
+.titleHeadProj {
   font-size: 2em;
   text-align: center;
   font-family: 'Open Sans', sans-serif;

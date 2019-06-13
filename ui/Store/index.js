@@ -10,7 +10,17 @@ const strore = new Vuex.Store({
     state:{
         startMsg:'',
         logged: false,
-        userToken: ''
+        userToken: '',
+        tickets: [        {
+            id: 10,
+            status: 'Новые',
+            title: 'Из Vuex',
+            ansigned: 'Иванов',
+			prior: '1',
+			visib: true
+        }],
+        maxId:10,
+        rerend: false
     },
     getters:{
         results(state){
@@ -24,6 +34,10 @@ const strore = new Vuex.Store({
         },
         userName(state){
             return state.userName
+        },
+        getTickets(state){
+            console.log("get:tickets::", state.tickets);
+            return state.tickets;
         }
     },
     mutations:{
@@ -38,8 +52,25 @@ const strore = new Vuex.Store({
         },
         startmessage(state,value){
             state.startMsg=value
+        },
+        setBlockTickets(state, value) {
+            state.tickets=JSON.parse(JSON.stringify(value))
+            state.rerend = true;
+        },
+        setAddTickets(state, value) {
+            state.maxId+=1;
+            value.id = state.maxId;
+            console.log("add:tickets::", value);
+            state.tickets.push(JSON.parse(JSON.stringify(value)));
+            console.log("><TICKETS:", state.tickets)
+            state.rerend = true;
+        },
+        setRerendFalse(state){
+            state.rerend = false;
+        },
+        setRerendTrue(state){
+            state.rerend = true;
         }
-
     },
     actions:{
         search:searchusr,
