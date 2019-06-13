@@ -9,28 +9,28 @@
           style = "color: black;"
           title="Новая карточка"
         >
-        <div class = "titleHeadModal">Новая карточка</div>
+        <div class = "titleHeadModal"># {{itemTicket.id}}</div>
         <div id = "newTicket">
         <div><input type="text" value="Название" readonly class = "titleInput"></div>
-        <div><input type="text" v-model="ticketTitle" size = "55" class = "inputs"></div>
+        <div><input type="text" v-model="itemTicket.title" size = "55" class = "inputs"></div>
         <div><input type="text" value="Описание" readonly class = "titleInput"></div>
-        <div><textarea v-model="ticketDescription" rows = "2" cols = "55" class = "inputs"></textarea></div>
+        <div><textarea v-model="itemTicket.desc" rows = "2" cols = "55" class = "inputs"></textarea></div>
         <div><input type="text" value="Приоритет" readonly class = "titleInput"></div>
         <div>
-          <select v-model="selPriorytet"  class = "inputs">
-            <option disabled value="">Выберите один из вариантов</option>
+          <select v-model="itemTicket.prior"  class = "inputs">
+            <option disabled value="">{{itemTicket.prior}}</option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
           </select>
         </div>
         <div><input type="text" value="Дата завершения" readonly class = "titleInput"></div>
-        <div><input  type = "date" size = "5" v-model="ticketDate"  class = "inputs" style="height: 34px; text-align: center"></div>
+        <div><input  type = "date" size = "5" v-model="itemTicket.date"  class = "inputs" style="height: 34px; text-align: center"></div>
         <div><input type="text" value="Подзадачи" readonly class = "titleInput"></div>
         <div>
-          <div v-for="subItem, indexSub in subTasks" >
+          <div v-for="subItem, indexSub in itemTicket.sub" >
             <input type="text" :value="indexSub+1" readonly size = "2" class = "idSub">
-            <input type="text" v-if="editing" v-model="subTasks[indexSub]" size = "44"  class = "inputs" style = "margin: 2px;">
+            <input type="text" v-if="editing" v-model="itemTicket.sub[indexSub]" size = "44"  class = "inputs" style = "margin: 2px;">
             <input type="text" v-else :value="subItem" readonly size = "44"  class = "inputs" style = "margin: 2px;">
             <img src="../assets/edit2.png" @click="editSub()" title = "Редактировать">
             <img v-if="editing" src="../assets/add.png" @click="saveEdit()" title = "Сохранить">
@@ -41,13 +41,14 @@
         </div>
         <div><input type="text" value="Ответственный" readonly class = "titleInput"></div>
         <div>
-          <select v-model="selUser"  class = "inputs">
-            <option disabled value="">Выберите один из вариантов</option>
+          <select v-model="ansUser"  class = "inputs">
+            <option disabled value="">{{itemTicket.ansigned}}</option>
             <option>Иванов</option>
             <option>Петров</option>
             <option>Сидоров</option>
           </select>
         </div>
+        {{itemTicket.modHist}}
         </div>
         <div id = "FooterSaveCancel">
             <button id = "butSave" @click="pressSave()">Сохранить</button>
@@ -64,16 +65,11 @@ import store from '../../../Store/index.js'
 
 Vue.use(vueKanban)
 export default {
-  props: ['mTShow'],
+  props: ['mTShow', 'itemTicket'],
   data () {
     return {
       editing: false,
-      ticketTitle: '',
-      ticketDescription: '',
-      ticketDate: '',
-      selPriorytet: '',
-      selUser: '',
-      subTasks:[],
+      ansUser: '',
       newSub: '',
       resultTicket: {id: 0,
         title:'',
@@ -85,8 +81,7 @@ export default {
         author: '',
         currentDate: '',
         status: 'Новые',
-        visib: true,
-        modHist:[]
+        visib: true
       }
       // tmpresultTicket: {}
     }
@@ -104,7 +99,7 @@ export default {
     dellSub(indexItem) {
       if (confirm("Удалить подзадачу №"+(indexItem+1)+" ?"))
       {
-        this.subTasks.splice(indexItem, 1);
+        this.itemTicket.sub.splice(indexItem, 1);
       }
     },
     saveEdit() {
@@ -115,7 +110,7 @@ export default {
     },
     addSub() {
       if (this.newSub.length) {
-        this.subTasks.push(this.newSub);
+        this.itemTicket.sub.push(this.newSub);
         this.newSub =  '';
       } else {
         alert("Введите текст подзадачи.");
@@ -125,53 +120,42 @@ export default {
       if(confirm("Отменить создание задачи?")){
       console.log("> start pressCancel");
       this.$emit('getActive', true);
-      this.ticketTitle= '';
-      this.ticketDescription= '';
-      this.ticketDate= '';
-      this.selPriorytet= '';
-      this.selUser= '';
-      this.subTasks=[];
-      this.newSub= ''
+      this.ansUser = '';
       }
     },
     pressSave() {
       // let resultTicket = JSON.parse(JSON.stringify(this.tmpresultTicket))
-      if (this.ticketTitle.length) {
-        this.resultTicket.title = this.ticketTitle;
-      } else {
+      if (this.itemTicket.title.length === 0) {
         alert("Введите название задачи");
-      }
-      if (this.ticketDescription.length) {
-        this.resultTicket.desc = this.ticketDescription;
-      }
-      if (this.selPriorytet.length) {
-        this.resultTicket.prior = this.selPriorytet;
       } else {
-        this.resultTicket.prior = "3"
+        this.resultTicket.title = this.itemTicket.title;
+        if (this.itemTicket.desc.length) {
+          this.resultTicket.desc = this.itemTicket.desc;
+        }
+        if (this.itemTicket.prior.length) {
+          this.resultTicket.prior = this.itemTicket.prior;
+        } else {
+          this.resultTicket.prior = "3"
+        }
+        this.resultTicket.date = this.itemTicket.date;
+        if (this.itemTicket.sub.length) {
+          this.resultTicket.sub = this.itemTicket.sub.slice();
+        }
+        if (this.ansUser.length) {
+          this.resultTicket.ansigned = this.ansUser;
+          this.ansUser = '';
+        } else {
+          this.resultTicket.ansigned = "Назначить";
+        }
+        this.resultTicket.currentDate = new Date();
+        this.resultTicket.author = "user";
+        this.resultTicket.id = this.itemTicket.id;
+        this.resultTicket.status = this.itemTicket.status;
+        this.resultTicket.modHist = this.itemTicket.modHist;
+        console.log("TICKINFO:"+this.resultTicket);
+        this.$store.commit ('modTickets', this.resultTicket);
+        this.$emit('getActive', true);
       }
-      this.resultTicket.date = this.ticketDate;
-      if (this.subTasks.length) {
-        this.resultTicket.sub = this.subTasks.slice();
-      }
-      if (this.selUser.length) {
-        this.resultTicket.ansigned = this.selUser;
-      } else {
-        this.resultTicket.ansigned = "Назначить";
-      }
-      this.resultTicket.currentDate = new Date();
-      this.resultTicket.author = "user";
-      // this.resultTicket.modHist.push(this.resultTicket.currentDate + this.resultTicket.author + 'created');
-      this.resultTicket.modHist.push('created');
-      console.log("TICKINFO:"+this.resultTicket);
-      this.$store.commit ('setAddTickets', this.resultTicket);
-      this.$emit('getActive', true);
-      this.ticketTitle= '';
-      this.ticketDescription= '';
-      this.ticketDate= '';
-      this.selPriorytet= '';
-      this.selUser= '';
-      this.subTasks=[];
-      this.newSub= ''
     }
   }
 }

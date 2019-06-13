@@ -36,7 +36,7 @@
 						</div>
         </div>
         </kanban-board>
-				<mTicket ref="modalTick"></mTicket>
+				<sTicket :mTShow="showTick" :itemTicket="dataForShow" ref="sTick" @getActive="getActiveState"></sTicket>
     </div>
 </template>
 
@@ -44,7 +44,7 @@
 <script>
 import Vue from 'vue'
 import vueKanban from 'vue-kanban'
-import modTicket from './modalForms/mTicket'
+import showTicketM from './modalForms/mShowTicket'
 import store from '../../Store/index.js'
 
 Vue.use(vueKanban)
@@ -53,54 +53,38 @@ export default {
   data () {
     return {
       stages: ['Новые', 'В_работе', 'Проверка', 'Принято', 'Приостановлено', 'Закрыто'],
-      blocks: [
-        {
-            id: 1,
-            status: 'Новые',
-            title: 'Test',
-            ansigned: 'Иванов',
-						prior: '1',
-						visib: true
-        },
-				{
-            id: 3,
-            status: 'Новые',
-            title: 'Test',
-            ansigned: 'Иванов',
-            prior: '3',
-						visib: true
-        },
-        {
-            id: 2,
-            status: 'В_работе',
-            title: 'Test2',
-            ansigned: 'Иванов',
-            prior: '2',
-						visib: true
-        },
-			],
-			flagUpdate: false
+      blocks: [],
+			flagUpdate: false,
+			showTick: false,
+			dataForShow: {}
     }
   },
   methods: {
-      createTicket() {
-          alert("Создать новую задачу");
-          this.blocks.push({
-            id: 3,
-            status: 'Новые',
-            title: 'Test3',
-        })
-      },
-			showTicket(dataTick) {
-				alert("id:"+dataTick.id);
-			},
-      updateBlock(id, status) {
-          this.blocks.find(b => b.id === Number(id)).status = status;
-					this.blocks.find(b => b.id === Number(id)).ansigned = 'Назначить';
-					this.$store.commit ('setBlockTickets', this.blocks);
-					this.flagUpdate = true;
-			},
-					showStatelocal() {
+		getActiveState(state) {
+			console.log("> start getActiveState");
+			if (state) {
+				this.showTick = false;
+			}
+		},
+		createTicket() {
+				alert("Создать новую задачу");
+				this.blocks.push({
+					id: 3,
+					status: 'Новые',
+					title: 'Test3',
+			})
+		},
+		showTicket(dataTick) {
+			this.showTick =! this.showTick;
+			this.dataForShow = dataTick;
+		},
+		updateBlock(id, status) {
+				this.blocks.find(b => b.id === Number(id) && status!=='В_работе').status = status;
+				this.blocks.find(b => b.id === Number(id)).ansigned = 'Назначить';
+				this.$store.commit ('setBlockTickets', this.blocks);
+				this.flagUpdate = true;
+		},
+		showStatelocal() {
 			console.log("SHOW:", this.$store.getters.getTickets);
 		}
   },
@@ -164,7 +148,7 @@ export default {
 	}
 }
 
-Vue.component('mTicket', modTicket)
+Vue.component('sTicket', showTicketM)
 </script>
 
 <style lang="scss">

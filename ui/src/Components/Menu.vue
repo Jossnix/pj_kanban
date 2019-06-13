@@ -4,17 +4,52 @@
         <div id = "blockMenu" v-show = "isLogin">
           <b-navbar type="dark">
           <b-navbar-nav>
-          <b-nav-item @click="findDropMenu(item)">Фильтры</b-nav-item>
+          <!-- <b-nav-item @click="findDropMenu(item)">Фильтры</b-nav-item> -->
+          <b-nav-item-dropdown id="dropdown-0" text="Фильтры">
+            <b-dropdown-form style="text-align: center;">
+              <b-form-group label="Приоритет">
+                <b-form-select v-model="fPrior">
+                  <option>Все</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                </b-form-select>
+              </b-form-group>
+              <b-form-group label="Ответственный">
+                <b-form-select v-model="fAns">
+                  <option>Все</option>
+                  <option>Назначить</option>
+                  <option>Иванов</option>
+                  <option>Петров</option>
+                  <option>Сидоров</option>
+                </b-form-select>
+              </b-form-group>
+              <b-button variant="outline-primary" size="sm" @click="onFilter">Применить</b-button>
+            </b-dropdown-form>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown id="dropdown-1" text="Задачи">
             <b-dropdown-item @click="showModal()">Создать задачу</b-dropdown-item>
             <!-- <b-dropdown-item @click="$bvMadal.show('mTick')">Создать задачу</b-dropdown-item> -->
           </b-nav-item-dropdown>
           <b-nav-item-dropdown id="dropdown-2" text="Пользователи">
-            <b-dropdown-item>Создать учётную запись</b-dropdown-item>
+            <b-dropdown-item @click="showModalUser()">Создать учётную запись</b-dropdown-item>
             <b-dropdown-item>Изменить учётную запись</b-dropdown-item>
             <b-dropdown-item>Удалить учётную запись</b-dropdown-item>
           </b-nav-item-dropdown>
-          <b-nav-item @click="findDropMenu(item)">Изменить пароль</b-nav-item>
+          <b-nav-item-dropdown id="dropdown-0" text="Изменить пароль">
+            <b-dropdown-form style="text-align: center; width: 200px;">
+              <b-form-group label="Введите старый пароль">
+                <b-form-input type="password" v-model="oldPass"></b-form-input>
+              </b-form-group>
+              <b-form-group label="Введите новый пароль">
+                <b-form-input type="password" v-model="newPass"></b-form-input>
+              </b-form-group>
+              <b-form-group label="Повторите новый пароль">
+                <b-form-input type="password" v-model="newPass2"></b-form-input>
+              </b-form-group>
+              <b-button variant="outline-primary" size="sm" @click="onPass">Применить</b-button>
+            </b-dropdown-form>
+          </b-nav-item-dropdown>
             <!-- <b-dropdown-item>Удалить учётную запись</b-dropdown-item> -->
           </b-navbar-nav>
           </b-navbar>
@@ -24,6 +59,7 @@
         </div>
       </div>
       <mTicket :mTShow="showTicketAdd" ref="modalTick" @getActive="getActiveState"></mTicket>
+      <mUser :mUShow="showUserAdd" ref="modalUser" @getActiveUser="getActiveStateUser"></mUser>
     </div>
 </template>
 
@@ -32,13 +68,20 @@ import Vue from 'vue'
 import store from '../../Store/index.js'
 import BootstrapVue from 'bootstrap-vue'
 import modTicket from './modalForms/mTicket'
+import modUser from './modalForms/mUser'
 
 Vue.use(BootstrapVue);
 
 export default {
   data () {
     return {
-      showTicketAdd: false
+      showTicketAdd: false,
+      showUserAdd: false,
+      fPrior:'',
+      fAns:'',
+      oldPass:'',
+      newPass:'',
+      newPass2:''
     }
   },
   methods: {
@@ -48,15 +91,19 @@ export default {
         this.showTicketAdd = false;
       }
     },
+    getActiveStateUser(state) {
+      console.log("> start getActiveStateUser");
+      if (state) {
+        this.showUserAdd = false;
+      }
+    },
     showModal() {
       console.log("> start showModal");
-      // this.$refs['mTick'].show();
-      // this.$store.commit ('setModAddTick', true);
       this.showTicketAdd =! this.showTicketAdd;
-      // this.$bvMadal.show('mTick');
     },
-    goPage(pathPage) {
-      this.$router.push({ path: pathPage })
+    showModalUser() {
+      console.log("> start showModal");
+      this.showUserAdd =! this.showUserAdd;
     },
     pressBtnExit(){
       this.$store.commit ('cleanToken', '');
@@ -65,13 +112,19 @@ export default {
       this.$router.push({ path: '/login' })
       localStorage.removeItem('name');
       localStorage.removeItem('token');
+    },
+    onFilter(){
+      let filterData = {
+      prior: this.fPrior,
+      ans: this.fAns
+      }
+      this.$store.commit ('setFilter', filterData);
+    },
+    onPass() {
+      alert(this.oldPass);
     }
   },
   computed: {
-    // showTicketAdd: function() {
-    //   alert(store.getters.getModAddTick);
-    //   return store.getters.getModAddTick;
-    // },
 
     // Проверка статуса пользователя авторизован/не авторизован
     isLogin: function() {
@@ -84,6 +137,7 @@ export default {
   }
 }
 Vue.component('mTicket', modTicket)
+Vue.component('mUser', modUser)
 </script>
 
 <style>

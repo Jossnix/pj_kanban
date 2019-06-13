@@ -11,15 +11,17 @@ const strore = new Vuex.Store({
         startMsg:'',
         logged: false,
         userToken: '',
-        tickets: [        {
-            id: 10,
-            status: 'Новые',
-            title: 'Из Vuex',
-            ansigned: 'Иванов',
-			prior: '1',
-			visib: true
-        }],
-        maxId:10,
+        tickets: [
+        //     {
+        //     id: 10,
+        //     status: 'Новые',
+        //     title: 'Из Vuex',
+        //     ansigned: 'Иванов',
+		// 	prior: '1',
+		// 	visib: true
+        // }
+        ],
+        maxId:0,
         rerend: false
     },
     getters:{
@@ -60,8 +62,15 @@ const strore = new Vuex.Store({
         setAddTickets(state, value) {
             state.maxId+=1;
             value.id = state.maxId;
-            console.log("add:tickets::", value);
             state.tickets.push(JSON.parse(JSON.stringify(value)));
+            console.log("><TICKETS:", state.tickets)
+            state.rerend = true;
+        },
+        modTickets(state, value) {
+            let indexTarget;
+            indexTarget = state.tickets.findIndex(item => item.id === value.id);
+            console.log("VALUE:",indexTarget,  value);
+            state.tickets.splice(indexTarget, 1, JSON.parse(JSON.stringify(value)));
             console.log("><TICKETS:", state.tickets)
             state.rerend = true;
         },
@@ -69,6 +78,19 @@ const strore = new Vuex.Store({
             state.rerend = false;
         },
         setRerendTrue(state){
+            state.rerend = true;
+        },
+        setFilter(state, fData){
+            if (fData.prior === 'Все'){
+                state.tickets.forEach(item => item.visib = true);
+            } else {
+                state.tickets.find(item => item.prior !== fData.prior).visib = false;
+            }
+            if (fData.ans === 'Все'){
+                state.tickets.forEach(item => item.visib = true);
+            } else {
+                state.tickets.find(item => item.ansigned !== fData.ans).visib = false;
+            }
             state.rerend = true;
         }
     },
