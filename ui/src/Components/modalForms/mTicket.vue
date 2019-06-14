@@ -43,9 +43,7 @@
         <div>
           <select v-model="selUser"  class = "inputs">
             <option disabled value="">Выберите один из вариантов</option>
-            <option>Иванов</option>
-            <option>Петров</option>
-            <option>Сидоров</option>
+            <option v-for="itemUser in users">{{itemUser.name}}</option>
           </select>
         </div>
         </div>
@@ -64,7 +62,7 @@ import store from '../../../Store/index.js'
 
 Vue.use(vueKanban)
 export default {
-  props: ['mTShow'],
+  props: ['mTShow', 'users'],
   data () {
     return {
       editing: false,
@@ -88,31 +86,27 @@ export default {
         visib: true,
         modHist:[]
       }
-      // tmpresultTicket: {}
     }
   },
   methods: {
     hideModalT() {
-      alert("good");
       this.$store.commit ('setModAddTick', false);
     },
-    showModal() {
-      console.log("> start showModal");
-      // this.tmpresultTicket= JSON.parse(JSON.stringify(this.resultTicket))
-      this.$refs.mTick.show()
-    },
+    // Удалить подзадачу
     dellSub(indexItem) {
       if (confirm("Удалить подзадачу №"+(indexItem+1)+" ?"))
       {
         this.subTasks.splice(indexItem, 1);
       }
     },
+    // Включить/выключить режим редактирования
     saveEdit() {
       this.editing=false;
     },
     editSub() {
       this.editing=true;
     },
+    // Добавить подзадачу
     addSub() {
       if (this.newSub.length) {
         this.subTasks.push(this.newSub);
@@ -121,6 +115,7 @@ export default {
         alert("Введите текст подзадачи.");
       }
     },
+    // Отмена
     pressCancel() {
       if(confirm("Отменить создание задачи?")){
       console.log("> start pressCancel");
@@ -134,44 +129,43 @@ export default {
       this.newSub= ''
       }
     },
+    // Сохранить
     pressSave() {
-      // let resultTicket = JSON.parse(JSON.stringify(this.tmpresultTicket))
-      if (this.ticketTitle.length) {
-        this.resultTicket.title = this.ticketTitle;
-      } else {
+      if (this.ticketTitle.length === 0) {
         alert("Введите название задачи");
-      }
-      if (this.ticketDescription.length) {
-        this.resultTicket.desc = this.ticketDescription;
-      }
-      if (this.selPriorytet.length) {
-        this.resultTicket.prior = this.selPriorytet;
       } else {
-        this.resultTicket.prior = "3"
+        this.resultTicket.title = this.ticketTitle;
+        if (this.ticketDescription.length) {
+          this.resultTicket.desc = this.ticketDescription;
+        }
+        if (this.selPriorytet.length) {
+          this.resultTicket.prior = this.selPriorytet;
+        } else {
+          this.resultTicket.prior = "3"
+        }
+        this.resultTicket.date = this.ticketDate;
+        if (this.subTasks.length) {
+          this.resultTicket.sub = this.subTasks.slice();
+        }
+        if (this.selUser.length) {
+          this.resultTicket.ansigned = this.selUser;
+        } else {
+          this.resultTicket.ansigned = "Назначить";
+        }
+        this.resultTicket.currentDate = new Date();
+        this.resultTicket.author = "user";
+        this.resultTicket.modHist.push('created');
+        console.log("TICKINFO:"+this.resultTicket);
+        this.$store.commit ('setAddTickets', this.resultTicket);
+        this.$emit('getActive', true);
+        this.ticketTitle= '';
+        this.ticketDescription= '';
+        this.ticketDate= '';
+        this.selPriorytet= '';
+        this.selUser= '';
+        this.subTasks=[];
+        this.newSub= ''
       }
-      this.resultTicket.date = this.ticketDate;
-      if (this.subTasks.length) {
-        this.resultTicket.sub = this.subTasks.slice();
-      }
-      if (this.selUser.length) {
-        this.resultTicket.ansigned = this.selUser;
-      } else {
-        this.resultTicket.ansigned = "Назначить";
-      }
-      this.resultTicket.currentDate = new Date();
-      this.resultTicket.author = "user";
-      // this.resultTicket.modHist.push(this.resultTicket.currentDate + this.resultTicket.author + 'created');
-      this.resultTicket.modHist.push('created');
-      console.log("TICKINFO:"+this.resultTicket);
-      this.$store.commit ('setAddTickets', this.resultTicket);
-      this.$emit('getActive', true);
-      this.ticketTitle= '';
-      this.ticketDescription= '';
-      this.ticketDate= '';
-      this.selPriorytet= '';
-      this.selUser= '';
-      this.subTasks=[];
-      this.newSub= ''
     }
   }
 }
@@ -185,7 +179,6 @@ export default {
   grid-gap: 0.4vw;
   height: 100%;
   width: 100%;
-  /* background: rgba(172, 143, 240, 0.925); */
   padding: 0px;
   align-items: center;
 }
@@ -222,7 +215,6 @@ export default {
 
 #butSave {
     cursor: pointer;
-    /* border: 2px solid rgb(36, 219, 82);; */
     border: none;
     outline: none;
     background: rgb(132, 157, 241);
@@ -230,17 +222,14 @@ export default {
     height: 35px;
     border-radius: 4px;
     font-family: 'Arial', Verdana, sans-serif;
-    /* font-weight: bold; */
 }
 #butSave:hover {
-    /* border: none; */
     background: rgb(36, 219, 82);
     color: rgb(19, 17, 17);
 }
 
 #butCancelled {
     cursor: pointer;
-    /* border: 2px solid rgb(231, 68, 68);; */
     border: none;
     outline: none;
     background: rgb(132, 157, 241);
@@ -248,11 +237,9 @@ export default {
     height: 35px;
     border-radius: 4px;
     font-family: 'Arial', Verdana, sans-serif;
-    /* font-weight: bold; */
 }
 #butCancelled:hover {
-    /* border: none; */
-    background: rgb(231, 68, 68);
+    background: rgb(238, 235, 47);
     color: rgb(19, 17, 17);
 }
 #FooterSaveCancel {

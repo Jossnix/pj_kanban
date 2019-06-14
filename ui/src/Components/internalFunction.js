@@ -21,5 +21,4 @@ async function authorization (username, password, invalidInput) {
     return (invalidInput)
 }
 
-// console.log( getIndexExist (tableData1, 'marked', true) );
 export {someCompareObj, getIndexExist, authorization};

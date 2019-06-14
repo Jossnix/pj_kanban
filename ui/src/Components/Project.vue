@@ -1,9 +1,7 @@
 <template>
     <div>
-        <!-- фильтры задачи пользователи изменить мои данные -->
 				<div class = "titleHeadProj">Всего задач: {{allCount}} Необходимо назначить: {{allNoAns}} {{needUp}}</div>
         <hr>
-        <!-- <button id = "btnCreate" @click="showStatelocal()">SHOW</button> -->
         <kanban-board :stages="stages" :blocks="blocks" @update-block="updateBlock">
         <div v-for="stage in stages" :slot="stage">
             <h2 v-if="stage==='Новые'">{{ stage }}:   {{counterStateNew}}</h2>
@@ -36,7 +34,7 @@
 						</div>
         </div>
         </kanban-board>
-				<sTicket :mTShow="showTick" :itemTicket="dataForShow" ref="sTick" @getActive="getActiveState"></sTicket>
+				<sTicket :mTShow="showTick" :itemTicket="dataForShow" :users="gUsers" ref="sTick" @getActive="getActiveState"></sTicket>
     </div>
 </template>
 
@@ -52,6 +50,7 @@ Vue.use(vueKanban)
 export default {
   data () {
     return {
+			gUsers: [],
       stages: ['Новые', 'В_работе', 'Проверка', 'Принято', 'Приостановлено', 'Закрыто'],
       blocks: [],
 			flagUpdate: false,
@@ -60,71 +59,64 @@ export default {
     }
   },
   methods: {
+		// Флаг для отображения модального окна
 		getActiveState(state) {
 			console.log("> start getActiveState");
 			if (state) {
 				this.showTick = false;
 			}
 		},
-		createTicket() {
-				alert("Создать новую задачу");
-				this.blocks.push({
-					id: 3,
-					status: 'Новые',
-					title: 'Test3',
-			})
-		},
+		// Просмотр карточки
 		showTicket(dataTick) {
 			this.showTick =! this.showTick;
 			this.dataForShow = dataTick;
 		},
+		// Перемещение блока
 		updateBlock(id, status) {
-				this.blocks.find(b => b.id === Number(id) && status!=='В_работе').status = status;
+				this.blocks.find(b => b.id === Number(id)).status = status;
 				this.blocks.find(b => b.id === Number(id)).ansigned = 'Назначить';
 				this.$store.commit ('setBlockTickets', this.blocks);
 				this.flagUpdate = true;
-		},
-		showStatelocal() {
-			console.log("SHOW:", this.$store.getters.getTickets);
 		}
   },
 	computed: {
+		// Счётчики задач
 		counterStateNew: function () {
-			let counter = this.blocks.filter(x => x.status === 'Новые');
+			let counter = this.blocks.filter(x => x.status === 'Новые' && x.visib===true);
 			let counterAct = counter.filter(y => y.ansigned !== 'Назначить');
 			return(counterAct.length + '/' + counter.length);
 		},
 		counterStateWork: function () {
-			let counter = this.blocks.filter(x => x.status === 'В_работе');
+			let counter = this.blocks.filter(x => x.status === 'В_работе' && x.visib===true);
 			let counterAct = counter.filter(y => y.ansigned !== 'Назначить');
 			return(counterAct.length + '/' + counter.length);
 		},
 		counterStateRev: function () {
-			let counter = this.blocks.filter(x => x.status === 'Проверка');
+			let counter = this.blocks.filter(x => x.status === 'Проверка' && x.visib===true);
 			let counterAct = counter.filter(y => y.ansigned !== 'Назначить');
 			return(counterAct.length + '/' + counter.length);
 		},
 		counterStateAppr: function () {
-			let counter = this.blocks.filter(x => x.status === 'Принято');
+			let counter = this.blocks.filter(x => x.status === 'Принято' && x.visib===true);
 			let counterAct = counter.filter(y => y.ansigned !== 'Назначить');
 			return(counterAct.length + '/' + counter.length);
 		},
 		counterStateHold: function () {
-			let counter = this.blocks.filter(x => x.status === 'Приостановлено');
+			let counter = this.blocks.filter(x => x.status === 'Приостановлено' && x.visib===true);
 			let counterAct = counter.filter(y => y.ansigned !== 'Назначить');
 			return(counterAct.length + '/' + counter.length);
 		},
 		counterStateClose: function () {
-			let counter = this.blocks.filter(x => x.status === 'Закрыто');
+			let counter = this.blocks.filter(x => x.status === 'Закрыто' && x.visib===true);
 			let counterAct = counter.filter(y => y.ansigned !== 'Назначить');
 			return(counterAct.length + '/' + counter.length);
 		},
 		allCount: function () {
-			let counter = this.blocks.length
+			let counter = this.blocks.filter(x => x.visib===true).length;
 			return(counter);
 		},
 		allNoAns: function () {
-			let counter = this.blocks.filter(y => y.ansigned === 'Назначить').length;
+			let counter = this.blocks.filter(y => y.ansigned === 'Назначить' && y.visib===true).length;
 			return(counter);
 		},
 		needUp: function () {
@@ -134,12 +126,13 @@ export default {
 		}
 	},
 	mounted() {
+		this.gUsers = this.$store.getters.getUsers;
 		this.blocks = JSON.parse(JSON.stringify(this.$store.getters.getTickets));
 	},
 	updated() {
 		console.log("> start updated");
 		if (this.$store.state.rerend) {
-			console.log("SHOW:", this.$store.getters.getTickets);
+		this.gUsers = this.$store.getters.getUsers;
 		this.blocks = JSON.parse(JSON.stringify(this.$store.getters.getTickets));
 			console.log("> run updated", this.blocks);
 			this.flagUpdate = false;
@@ -152,7 +145,6 @@ Vue.component('sTicket', showTicketM)
 </script>
 
 <style lang="scss">
-  // @import './assets/kanban.scss';
 
 $ease-out: all .3s cubic-bezier(0.23, 1, 0.32, 1);
 $new: rgb(214, 68, 251);
@@ -276,9 +268,10 @@ ul {
 
 .drag-item {
 	margin: 10px;
-	height: 150px;
+	height: 170px;
 	background: rgba(black, 0.4);
 	transition: $ease-out;
+	text-align: center;
 	
 	&.is-moving {
 		transform: scale(1.5);
@@ -349,7 +342,6 @@ ul {
   opacity: 0.2;
 }
 
-/* Demo info */
 
 .section {
 	padding: 20px;
@@ -375,7 +367,6 @@ ul {
     outline: none;
     background: rgba(221, 228, 253, 0.925);
     text-align: center;
-    // width: 1.5em;
     height: 1.5em;
 }
 

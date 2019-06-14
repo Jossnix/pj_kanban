@@ -19,9 +19,7 @@
                 <b-form-select v-model="fAns">
                   <option>Все</option>
                   <option>Назначить</option>
-                  <option>Иванов</option>
-                  <option>Петров</option>
-                  <option>Сидоров</option>
+                  <option v-for="itemUser in gUsers">{{itemUser.name}}</option>
                 </b-form-select>
               </b-form-group>
               <b-button variant="outline-primary" size="sm" @click="onFilter">Применить</b-button>
@@ -29,7 +27,6 @@
           </b-nav-item-dropdown>
           <b-nav-item-dropdown id="dropdown-1" text="Задачи">
             <b-dropdown-item @click="showModal()">Создать задачу</b-dropdown-item>
-            <!-- <b-dropdown-item @click="$bvMadal.show('mTick')">Создать задачу</b-dropdown-item> -->
           </b-nav-item-dropdown>
           <b-nav-item-dropdown id="dropdown-2" text="Пользователи">
             <b-dropdown-item @click="showModalUser()">Создать учётную запись</b-dropdown-item>
@@ -58,7 +55,7 @@
           <button id = "btnExit" @click="pressBtnExit()">Выход</button>
         </div>
       </div>
-      <mTicket :mTShow="showTicketAdd" ref="modalTick" @getActive="getActiveState"></mTicket>
+      <mTicket :mTShow="showTicketAdd" :users="gUsers" ref="modalTick" @getActive="getActiveState"></mTicket>
       <mUser :mUShow="showUserAdd" ref="modalUser" @getActiveUser="getActiveStateUser"></mUser>
     </div>
 </template>
@@ -75,6 +72,7 @@ Vue.use(BootstrapVue);
 export default {
   data () {
     return {
+      gUsers: [],
       showTicketAdd: false,
       showUserAdd: false,
       fPrior:'',
@@ -99,6 +97,7 @@ export default {
     },
     showModal() {
       console.log("> start showModal");
+      this.gUsers = this.$store.getters.getUsers;
       this.showTicketAdd =! this.showTicketAdd;
     },
     showModalUser() {
@@ -125,7 +124,6 @@ export default {
     }
   },
   computed: {
-
     // Проверка статуса пользователя авторизован/не авторизован
     isLogin: function() {
       if (this.$store.state.userToken.length && this.$store.state.userToken!=='AuthError') {
@@ -134,7 +132,10 @@ export default {
         return false
       }
     }
-  }
+  },
+  mounted() {
+    this.gUsers = this.$store.getters.getUsers;
+	},
 }
 Vue.component('mTicket', modTicket)
 Vue.component('mUser', modUser)

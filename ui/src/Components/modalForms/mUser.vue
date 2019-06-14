@@ -199,7 +199,7 @@ export default {
 }
 #butCancelled:hover {
     /* border: none; */
-    background: rgb(231, 68, 68);
+    background: rgb(238, 235, 47);
     color: rgb(19, 17, 17);
 }
 #FooterSaveCancel {

@@ -4,11 +4,7 @@ import VueRouter from 'vue-router'
 import store from '../Store/index.js'
 import login from './Components/Login.vue'
 import lMenu from './Components/Menu.vue'
-import mypage from './Components/MyPage.vue'
-import manager from './Components/Manager.vue'
 import pj from './Components/Project.vue'
-import newticket from './Components/manager/FullTicket.vue'
-import newuser from './Components/manager/FullUser.vue'
 
 var VueAuth = require('vue-auth')
  
@@ -34,43 +30,11 @@ var router = new VueRouter({
         requiresAuth: true
       },
       component: pj
-    },
-    {
-      path: '/manager',
-      name: 'manager',
-      meta: {
-        requiresAuth: true
-      },
-      component: manager
-    },
-    {
-      path: '/newticket',
-      name: 'newticket',
-      meta: {
-        requiresAuth: true
-      },
-      component: newticket
-    },
-    {
-      path: '/newuser',
-      name: 'newuser',
-      meta: {
-        requiresAuth: true
-      },
-      component: newuser
-    },
-    {
-      path: '/pj',
-      name: 'pj',
-      meta: {
-        requiresAuth: true
-      },
-      component: pj
     }
   ]
 })
 
-// При отсутсвии авторизации пользователя будет перенаправлять на страницу mypage
+// При отсутсвии авторизации пользователя будет перенаправлять на страницу login
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     if (localStorage.getItem('token') !== null) {
@@ -87,7 +51,6 @@ const app = new Vue({
   el: '#app',
   store: store,
   router: router,
-  // render: h =>h(App)
 })
 
 const cMenu = new Vue({

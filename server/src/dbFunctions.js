@@ -4,20 +4,6 @@ const dbconf = require("./conf/dbconf.json");
 const url = dbconf.kUrl;
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
 
-// findMnCon("user")
-// .then(
-//   response => {
-//     console.log("RESPONSE: ", response);
-//   },
-//   error => console.log("<=> error checkUser: ", error)
-// )
-// createUser(dbconf, "user", "Пользователь для тестирования", "111", "user");
-// changeUser(dbconf, "Dima8", "Dimon", "", "");
-// delUser(dbconf, "Dima4");
-// checkUser(dbconf, "user");
-// createTicket(dbconf, "Title for new ticket");
-// delTicket(dbconf, 5);
-
 // Добавить пользователя
 async function createUser (dbconf, newUser, userDiscr, password, userRole) {
   mongoClient.connect(async function(err, client){
@@ -47,22 +33,6 @@ async function createUser (dbconf, newUser, userDiscr, password, userRole) {
   })
 }
 // Проверить, существует ли пользователь
-// async function checkUser (dbconf, oldUser) {
-//   await mongoClient.connect(async function(err, client){
-//     const db = client.db(dbconf.kName);
-//     const collectionUs = db.collection(dbconf.kCollections.users)
-//     await collectionUs.findOne({name: oldUser}, async function(err, results){
-//       if(err){ 
-//         return console.log(err);
-//       } else {
-//         console.log("Finds: ", results);
-//         await client.close();
-//         return (results)
-//       }
-//     });
-//   });
-// }
-
 function findMn(collectionUs, oldUser) {
   console.log("-> start findMn")
   return new Promise (function (resolve, reject) {
@@ -78,6 +48,23 @@ function findMn(collectionUs, oldUser) {
   })
   })
 }
+// Получение всех пользователей
+function allUsers (collectionUs) {
+  console.log("-> start allUsers")
+  return new Promise (function (resolve, reject) {
+    collectionUs.findOne({name: oldUser}, (error, result) => {
+      if (error) {
+          console.log("local error");
+          let error = new Error (this.statusText);
+          error.code = this.status;
+          reject (error);
+      } else {
+          resolve (result);
+      }
+  })
+  })
+}
+
 async function checkUser (dbconf, oldUser) {
   await mongoClient.connect(async function(err, client){
     const db = client.db(dbconf.kName);
@@ -166,13 +153,11 @@ async function changeUser (dbconf, chUser, userDiscr, password, userRole) {
   })
 }
 // Создать задачу
-// async function createTicket (dbconf, сId, сTitle, сStatus, сDescription, сPriority, сCreated, сAssigned, сEndDate, сTime) {
 async function createTicket (dbconf, сTitle) {
   mongoClient.connect(async function(err, client){
     const db = client.db(dbconf.kName);
     const collectionTck = db.collection(dbconf.kCollections.tickets);
     let tId;
-    // let newTicket = {id: сId, title: сTitle, status: сStatus, description: сDescription, priority: сPriority, created: сCreated, assigned: сAssigned, endDate: сEndDate, time: сTime}
     await collectionTck.find().sort({id: -1}).limit(1).toArray(async function(err, results){;
       if(err){ 
         return console.log(err);
@@ -184,7 +169,6 @@ async function createTicket (dbconf, сTitle) {
         } else {
           tId = 0
         }
-        // let newTicket = {id: tId, title: сTitle, status: сStatus, description: сDescription, priority: сPriority, created: сCreated, assigned: сAssigned, endDate: сEndDate, time: сTime}
         let newTicket = {id: tId, title: сTitle, status: 'new'};
         await collectionTck.insertOne(newTicket, function(err, result){
           if(err){ 
@@ -198,6 +182,7 @@ async function createTicket (dbconf, сTitle) {
     })
   })
 }
+
 // Удалить задачу
 async function delTicket (dbconf, tId) {
   mongoClient.connect(async function(err, client){
@@ -231,8 +216,9 @@ async function delTicket (dbconf, tId) {
     })
   })
 }
+
 // Изменить задачу
-async function changeUser (dbconf, chUser, userDiscr, password, userRole) {
+async function changeTicket (dbconf, chUser, userDiscr, password, userRole) {
   mongoClient.connect(async function(err, client){
       const db = client.db(dbconf.kName);
       const collectionUs = db.collection(dbconf.kCollections.users);
@@ -277,3 +263,10 @@ async function changeUser (dbconf, chUser, userDiscr, password, userRole) {
 
 exports.checkUser = checkUser;
 exports.findMn = findMn;
+exports.allUsers = allUsers;
+exports.changeTicket = changeTicket;
+exports.changeUser = changeUser;
+exports.createTicket = createTicket;
+exports.createUser = createUser;
+exports.delUser = delUser;
+exports.delTicket = delTicket;

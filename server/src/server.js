@@ -24,9 +24,6 @@ serv.use(async (req, res, next) => {
   next();
 });
 
-const cUser = 'user'
-const cPass = '123'
-
 // Функция для получения токена авторизации
 serv.post('/api/login', async function(req, res){
   res.set('Access-Control-Allow-Origin', ['*']);
@@ -36,7 +33,7 @@ serv.post('/api/login', async function(req, res){
   console.log(pass)
   var fUser;
   const collectionUs = db.collection(dbconf.kCollections.users);
-  await dbFn.findMn(collectionUs, "user")
+  await dbFn.findMn(collectionUs, name)
   .then(
     response => {
       fUser = response;
@@ -48,10 +45,11 @@ serv.post('/api/login', async function(req, res){
   if(name === fUser.name && pass === fUser.pas)
   {
     jwt.sign(req.body, jwtsecret, (err,token)=>{
-      // В качестве ответа отправляется имя пользователя и токен
+      // В качестве ответа отправляется имя пользователя, токен, и полную информацию о пользователе.
       res.json({
         name: name,
-        token: token
+        token: token,
+        fUser: fUser
       });
     })
   }
@@ -63,6 +61,24 @@ serv.post('/api/login', async function(req, res){
       token:'AuthError'
     });
   }
+})
+
+// Функция для получения данных о пользователях
+serv.get('/api/users', async function(req, res){
+  res.set('Access-Control-Allow-Origin', ['*']);
+  const collectionUs = db.collection(dbconf.kCollections.users);
+  await dbFn.allUsers(collectionUs)
+  .then(
+    response => {
+      console.log("RESPONSE: ", response);
+      jwt.sign(req.body, jwtsecret, (err,token)=>{
+        res.json({
+          users: response
+        });
+      })
+    },
+    error => console.log("<=> error checkUser: ", error)
+  )
 })
 
 serv.listen(3000, function () {

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 import {searchusr, login, logout} from './searchuser.js'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -8,19 +7,17 @@ Vue.use(Vuex);
 
 const strore = new Vuex.Store({
     state:{
+        users: [
+        {name: 'Иванов', rol: 'User'},
+        {name: 'Ищенко', rol: 'Manager'},
+        {name: 'Петров', rol: 'User'},
+        {name: 'Сидоров', rol: 'User'}
+        ],
         startMsg:'',
         logged: false,
         userToken: '',
-        tickets: [
-        //     {
-        //     id: 10,
-        //     status: 'Новые',
-        //     title: 'Из Vuex',
-        //     ansigned: 'Иванов',
-		// 	prior: '1',
-		// 	visib: true
-        // }
-        ],
+        user: {},
+        tickets: [],
         maxId:0,
         rerend: false
     },
@@ -35,11 +32,13 @@ const strore = new Vuex.Store({
             return state.userToken
         },
         userName(state){
-            return state.userName
+            return state.user
         },
         getTickets(state){
-            console.log("get:tickets::", state.tickets);
             return state.tickets;
+        },
+        getUsers(state){
+            return state.users;
         }
     },
     mutations:{
@@ -50,7 +49,7 @@ const strore = new Vuex.Store({
             state.userToken=tokenData
         },
         cleanUserName(state,cUserName){
-            state.userName=cUserName
+            state.user=cUserName
         },
         startmessage(state,value){
             state.startMsg=value
@@ -63,15 +62,12 @@ const strore = new Vuex.Store({
             state.maxId+=1;
             value.id = state.maxId;
             state.tickets.push(JSON.parse(JSON.stringify(value)));
-            console.log("><TICKETS:", state.tickets)
             state.rerend = true;
         },
         modTickets(state, value) {
             let indexTarget;
             indexTarget = state.tickets.findIndex(item => item.id === value.id);
-            console.log("VALUE:",indexTarget,  value);
             state.tickets.splice(indexTarget, 1, JSON.parse(JSON.stringify(value)));
-            console.log("><TICKETS:", state.tickets)
             state.rerend = true;
         },
         setRerendFalse(state){
@@ -80,16 +76,24 @@ const strore = new Vuex.Store({
         setRerendTrue(state){
             state.rerend = true;
         },
+        dellTicket(state, id){
+            let indexTarget;
+            indexTarget = state.tickets.findIndex(item => item.id === id);
+            state.tickets.splice(indexTarget, 1);
+            state.rerend = true;
+        },
         setFilter(state, fData){
             if (fData.prior === 'Все'){
-                state.tickets.forEach(item => item.visib = true);
-            } else {
-                state.tickets.find(item => item.prior !== fData.prior).visib = false;
+                state.tickets.forEach(item1 => item1.visib = true);
             }
             if (fData.ans === 'Все'){
-                state.tickets.forEach(item => item.visib = true);
-            } else {
-                state.tickets.find(item => item.ansigned !== fData.ans).visib = false;
+                state.tickets.forEach(item4 => item4.visib = true);
+            }
+            if (fData.prior !== 'Все') {
+                state.tickets.filter(item2 => item2.prior !== fData.prior).forEach(item3 => item3.visib = false);
+            }
+            if (fData.ans !== 'Все'){
+                state.tickets.filter(item5 => item5.ansigned !== fData.ans).forEach(item6 => item6.visib = false);
             }
             state.rerend = true;
         }
